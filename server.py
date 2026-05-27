@@ -104,6 +104,38 @@ class ServerState:
 
 state = ServerState()
 
+def ensure_authenticated_client():
+    if state.client and state.client.naukri_session:
+        return state.client
+
+    try:
+        from src.careerflow.db import load_latest_naukri_session
+        from src.models.models import NaukriSession
+        import requests
+        
+        sess_data = load_latest_naukri_session()
+        if sess_data:
+            print(f"[AUTH] Found persisted session in database for {sess_data['username']}. Restoring...")
+            client = NaukriLoginClient(sess_data["username"], "")
+            
+            # Reconstruct session cookies
+            requests.utils.cookiejar_from_dict(sess_data["cookies"], client.session.cookies)
+            client.naukri_session = NaukriSession(sess_data["token"], client.session.cookies)
+            
+            # Validate session is still alive by making a lightweight request
+            try:
+                client.fetch_profile_id()
+                state.client = client
+                state.mobile_number = sess_data["username"]
+                print("[AUTH] Persisted session successfully validated and restored!")
+                return client
+            except Exception as ex:
+                print(f"[AUTH WARNING] Persisted session for {sess_data['username']} is expired or invalid: {ex}")
+    except Exception as e:
+        print(f"[AUTH WARNING] Failed to load/restore persisted session from DB: {e}")
+        
+    return None
+
 # Load mobile default from internship_profile.json
 try:
     internship_config = load_config("config/internship_profile.json")
@@ -352,6 +384,7 @@ class AISettingsRequest(BaseModel):
 # API Routes
 @app.get("/api/status")
 def get_status():
+    ensure_authenticated_client()
     # Check if daemon is active in the background
     daemon_active = False
     pid_path = Path("careerflow_daemon.pid")
@@ -429,6 +462,14 @@ def verify_otp(req: VerifyOtpRequest):
         state.client = NaukriLoginClient(req.mobile, "")
     try:
         state.client.verify_otp(otp=req.otp, username=req.mobile, is_mobile=True)
+        # Persist session to shared database
+        try:
+            from src.careerflow.db import save_naukri_session
+            import requests as _requests
+            cookies_dict = _requests.utils.dict_from_cookiejar(state.client.session.cookies)
+            save_naukri_session(req.mobile, state.client.naukri_session.bearer_token, cookies_dict)
+        except Exception as db_err:
+            print(f"[AUTH] Failed to persist OTP session to DB: {db_err}")
         return {"success": True, "message": "Authenticated successfully! Naukri session created."}
     except Exception as e:
         return {"success": False, "error": str(e)}
@@ -440,6 +481,14 @@ def login_password(req: PasswordLoginRequest):
         client.login()
         state.client = client
         state.mobile_number = req.username
+        # Persist session to shared database
+        try:
+            from src.careerflow.db import save_naukri_session
+            import requests as _requests
+            cookies_dict = _requests.utils.dict_from_cookiejar(client.session.cookies)
+            save_naukri_session(req.username, client.naukri_session.bearer_token, cookies_dict)
+        except Exception as db_err:
+            print(f"[AUTH] Failed to persist password session to DB: {db_err}")
         return {"success": True, "message": "Authenticated successfully with password!"}
     except Exception as e:
         return {"success": False, "error": str(e)}
@@ -542,8 +591,9 @@ def get_stats():
 
 @app.post("/api/run")
 def run_action(req: RunActionRequest):
+    ensure_authenticated_client()
     if not state.client or not state.client.naukri_session:
-        raise HTTPException(status_code=401, detail="Naukri authentication required. Verify OTP first.")
+        raise HTTPException(status_code=401, detail="Naukri authentication required. Log in from a local machine first.")
         
     if state.running_task and state.running_task.is_alive():
         raise HTTPException(status_code=400, detail=f"Task {state.running_task_name} is already running.")
@@ -685,18 +735,31 @@ def startup_event():
             state.client = client
             state.mobile_number = username
             print("[STARTUP] ✅ Automatic login successful! Session is active.")
+            # Also persist this new session to the shared database
             try:
-                from src.careerflow.db import save_timeline_event
+                from src.careerflow.db import save_naukri_session, save_timeline_event
+                import requests as _requests
+                cookies_dict = _requests.utils.dict_from_cookiejar(client.session.cookies)
+                save_naukri_session(username, client.naukri_session.bearer_token, cookies_dict)
                 save_timeline_event(f"Automatic login successful for operator {username}", "success")
             except Exception:
                 pass
         except Exception as e:
-            print(f"[STARTUP] ⚠️ Automatic login failed: {e}. You can login manually via the dashboard.")
+            print(f"[STARTUP] ⚠️ Automatic login failed: {e}. Trying to restore a saved session from the database...")
             try:
                 from src.careerflow.db import save_timeline_event
                 save_timeline_event(f"Automatic login failed for operator {username}", "error")
             except Exception:
                 pass
+
+    # 4. Fallback: Try restoring a persisted session from the shared database
+    if not state.client or not state.client.naukri_session:
+        print("[STARTUP] Attempting to restore session from shared database...")
+        restored = ensure_authenticated_client()
+        if restored:
+            print("[STARTUP] ✅ Session restored from database! Skipping manual login.")
+        else:
+            print("[STARTUP] No valid persisted session found. Manual login required via dashboard.")
 
 
 if frontend_dir.exists():

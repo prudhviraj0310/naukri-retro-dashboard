@@ -91,7 +91,17 @@ def init_db():
         )
     """)
     
-    # 4. Initialize default statistics values
+    # 4. Create naukri_sessions table
+    execute_query(f"""
+        CREATE TABLE IF NOT EXISTS naukri_sessions (
+            username TEXT PRIMARY KEY,
+            token TEXT,
+            cookies TEXT,
+            updated_at TEXT
+        )
+    """)
+    
+    # 5. Initialize default statistics values
     if DATABASE_URL:
         # PostgreSQL syntax
         execute_query("INSERT INTO statistics (key, value) VALUES ('profile_refreshes_total', '0') ON CONFLICT DO NOTHING")
@@ -224,4 +234,38 @@ def get_timeline_events(limit=50):
     except Exception as e:
         print(f"[DATABASE WARNING] Failed to retrieve timeline events: {e}")
         return []
+
+def save_naukri_session(username, token, cookies_dict):
+    try:
+        import json
+        cookies_json = json.dumps(cookies_dict)
+        # Clean existing sessions for the same user
+        execute_query("DELETE FROM naukri_sessions WHERE username = ?", (username,))
+        # Insert new session
+        execute_query("""
+            INSERT INTO naukri_sessions (username, token, cookies, updated_at)
+            VALUES (?, ?, ?, ?)
+        """, (username, token, cookies_json, datetime.now().isoformat()))
+        print(f"[DATABASE] Saved authenticated session for {username}.")
+    except Exception as e:
+        print(f"[DATABASE ERROR] Failed to save session for {username}: {e}")
+
+def load_latest_naukri_session():
+    try:
+        rows = execute_query("SELECT username, token, cookies FROM naukri_sessions ORDER BY updated_at DESC LIMIT 1")
+        if rows:
+            import json
+            row = rows[0]
+            try:
+                cookies_dict = json.loads(row["cookies"])
+            except Exception:
+                cookies_dict = {}
+            return {
+                "username": row["username"],
+                "token": row["token"],
+                "cookies": cookies_dict
+            }
+    except Exception as e:
+        print(f"[DATABASE WARNING] Failed to load latest session: {e}")
+    return None
 
