@@ -735,41 +735,47 @@ def startup_event():
         t = threading.Thread(target=keep_alive_ping, daemon=True)
         t.start()
 
-    username = os.getenv("USERNAME")
-    password = os.getenv("PASSWORD")
-    if username and password and "your_naukri" not in username:
-        print(f"[STARTUP] Found credentials in .env. Attempting automatic password login for {username}...")
-        try:
-            client = NaukriLoginClient(username, password)
-            client.login()
-            state.client = client
-            state.mobile_number = username
-            print("[STARTUP] ✅ Automatic login successful! Session is active.")
-            # Also persist this new session to the shared database
-            try:
-                from src.careerflow.db import save_naukri_session, save_timeline_event
-                import requests as _requests
-                cookies_dict = _requests.utils.dict_from_cookiejar(client.session.cookies)
-                save_naukri_session(username, client.naukri_session.bearer_token, cookies_dict)
-                save_timeline_event(f"Automatic login successful for operator {username}", "success")
-            except Exception:
-                pass
-        except Exception as e:
-            print(f"[STARTUP] ⚠️ Automatic login failed: {e}. Trying to restore a saved session from the database...")
-            try:
-                from src.careerflow.db import save_timeline_event
-                save_timeline_event(f"Automatic login failed for operator {username}", "error")
-            except Exception:
-                pass
-
-    # 4. Fallback: Try restoring a persisted session from the shared database
-    if not state.client or not state.client.naukri_session:
-        print("[STARTUP] Attempting to restore session from shared database...")
+    # 3. Check for a valid persisted session in the shared database first
+    restored = False
+    print("[STARTUP] Checking for a valid persisted session in the shared database...")
+    try:
         restored = ensure_authenticated_client()
-        if restored:
-            print("[STARTUP] ✅ Session restored from database! Skipping manual login.")
+    except Exception as e:
+        print(f"[STARTUP] Error checking database for session: {e}")
+
+    if restored:
+        print("[STARTUP] ✅ Session restored from database! Skipping password login.")
+    else:
+        print("[STARTUP] No valid persisted session found in database. Trying automatic password login...")
+        # 4. Fallback: Try automatic password login if env credentials exist
+        username = os.getenv("USERNAME")
+        password = os.getenv("PASSWORD")
+        if username and password and "your_naukri" not in username:
+            print(f"[STARTUP] Found credentials in .env. Attempting automatic password login for {username}...")
+            try:
+                client = NaukriLoginClient(username, password)
+                client.login()
+                state.client = client
+                state.mobile_number = username
+                print("[STARTUP] ✅ Automatic password login successful! Session is active.")
+                # Also persist this new session to the shared database
+                try:
+                    from src.careerflow.db import save_naukri_session, save_timeline_event
+                    import requests as _requests
+                    cookies_dict = _requests.utils.dict_from_cookiejar(client.session.cookies)
+                    save_naukri_session(username, client.naukri_session.bearer_token, cookies_dict)
+                    save_timeline_event(f"Automatic password login successful for operator {username}", "success")
+                except Exception:
+                    pass
+            except Exception as e:
+                print(f"[STARTUP] ⚠️ Automatic password login failed: {e}. Manual login required via dashboard.")
+                try:
+                    from src.careerflow.db import save_timeline_event
+                    save_timeline_event(f"Automatic password login failed for operator {username}", "error")
+                except Exception:
+                    pass
         else:
-            print("[STARTUP] No valid persisted session found. Manual login required via dashboard.")
+            print("[STARTUP] No credentials in .env or default placeholder detected. Awaiting manual login via dashboard.")
 
 
 @app.get("/")
