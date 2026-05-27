@@ -2,13 +2,23 @@ import sys
 import os
 import threading
 import time
+import mimetypes
 from pathlib import Path
 from datetime import datetime
 import csv
 from typing import Optional, List, Dict, Any
 
+# Ensure correct MIME types on all OS environments
+mimetypes.init()
+mimetypes.add_type("text/css", ".css")
+mimetypes.add_type("application/javascript", ".js")
+mimetypes.add_type("image/svg+xml", ".svg")
+mimetypes.add_type("image/png", ".png")
+mimetypes.add_type("image/jpeg", ".jpg")
+mimetypes.add_type("image/jpeg", ".jpeg")
+
 from fastapi import FastAPI, HTTPException, BackgroundTasks, Request
-from fastapi.responses import HTMLResponse, JSONResponse
+from fastapi.responses import HTMLResponse, JSONResponse, FileResponse
 from fastapi.staticfiles import StaticFiles
 from pydantic import BaseModel
 import uvicorn
@@ -762,12 +772,15 @@ def startup_event():
             print("[STARTUP] No valid persisted session found. Manual login required via dashboard.")
 
 
+@app.get("/")
+def serve_index():
+    index_path = frontend_dir / "index.html"
+    if index_path.exists():
+        return FileResponse(str(index_path))
+    return HTMLResponse("<h2>Frontend static directory not found yet. Build index.html.</h2>")
+
 if frontend_dir.exists():
-    app.mount("/", StaticFiles(directory=str(frontend_dir), html=True), name="static")
-else:
-    @app.get("/")
-    def fallback_root():
-        return HTMLResponse("<h2>Frontend static directory not found yet. Build index.html.</h2>")
+    app.mount("/", StaticFiles(directory=str(frontend_dir)), name="static")
 
 if __name__ == "__main__":
     port = int(os.environ.get("PORT", 8001))
