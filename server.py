@@ -114,6 +114,23 @@ class ServerState:
 
 state = ServerState()
 
+def extract_cookies_dict(session_cookies):
+    cookies_dict = {}
+    if not session_cookies:
+        return cookies_dict
+    if hasattr(session_cookies, "items"):
+        return dict(session_cookies)
+    for cookie in session_cookies:
+        if isinstance(cookie, dict):
+            name = cookie.get("name") or cookie.get("key")
+            value = cookie.get("value")
+        else:
+            name = getattr(cookie, "name", None) or getattr(cookie, "key", None)
+            value = getattr(cookie, "value", None)
+        if name:
+            cookies_dict[name] = value
+    return cookies_dict
+
 def ensure_authenticated_client():
     if state.client and state.client.naukri_session:
         return state.client
@@ -128,8 +145,17 @@ def ensure_authenticated_client():
             print(f"[AUTH] Found persisted session in database for {sess_data['username']}. Restoring...")
             client = NaukriLoginClient(sess_data["username"], "")
             
-            # Reconstruct session cookies
-            requests.utils.cookiejar_from_dict(sess_data["cookies"], client.session.cookies)
+            # Reconstruct session cookies safely (handles standard requests & httpcloak lists)
+            cookies = sess_data.get("cookies", {})
+            if isinstance(cookies, dict):
+                for name, value in cookies.items():
+                    try:
+                        if hasattr(client.session, "set_cookie"):
+                            client.session.set_cookie(name=name, value=value)
+                        else:
+                            client.session.cookies.set(name, value)
+                    except Exception as cookie_ex:
+                        print(f"[AUTH WARNING] Failed to set cookie {name}: {cookie_ex}")
             client.naukri_session = NaukriSession(sess_data["token"], client.session.cookies)
             
             # Validate session is still alive by making a lightweight request
@@ -475,8 +501,7 @@ def verify_otp(req: VerifyOtpRequest):
         # Persist session to shared database
         try:
             from src.careerflow.db import save_naukri_session
-            import requests as _requests
-            cookies_dict = _requests.utils.dict_from_cookiejar(state.client.session.cookies)
+            cookies_dict = extract_cookies_dict(state.client.session.cookies)
             save_naukri_session(req.mobile, state.client.naukri_session.bearer_token, cookies_dict)
         except Exception as db_err:
             print(f"[AUTH] Failed to persist OTP session to DB: {db_err}")
@@ -494,8 +519,7 @@ def login_password(req: PasswordLoginRequest):
         # Persist session to shared database
         try:
             from src.careerflow.db import save_naukri_session
-            import requests as _requests
-            cookies_dict = _requests.utils.dict_from_cookiejar(client.session.cookies)
+            cookies_dict = extract_cookies_dict(client.session.cookies)
             save_naukri_session(req.username, client.naukri_session.bearer_token, cookies_dict)
         except Exception as db_err:
             print(f"[AUTH] Failed to persist password session to DB: {db_err}")
@@ -735,48 +759,50 @@ def startup_event():
         t = threading.Thread(target=keep_alive_ping, daemon=True)
         t.start()
 
-    # 3. Check for a valid persisted session in the shared database first
-    restored = False
-    print("[STARTUP] Checking for a valid persisted session in the shared database...")
-    try:
-        restored = ensure_authenticated_client()
-    except Exception as e:
-        print(f"[STARTUP] Error checking database for session: {e}")
 
-    if restored:
-        print("[STARTUP] ✅ Session restored from database! Skipping password login.")
-    else:
-        print("[STARTUP] No valid persisted session found in database. Trying automatic password login...")
-        # 4. Fallback: Try automatic password login if env credentials exist
-        username = os.getenv("USERNAME")
-        password = os.getenv("PASSWORD")
-        if username and password and "your_naukri" not in username:
-            print(f"[STARTUP] Found credentials in .env. Attempting automatic password login for {username}...")
+    # 3. Attempt automatic password login using environment variables first
+    username = os.getenv("USERNAME")
+    password = os.getenv("PASSWORD")
+    logged_in = False
+    
+    if username and password and "your_naukri" not in username:
+        print(f"[STARTUP] Found credentials in env. Attempting automatic password login for {username}...")
+        try:
+            client = NaukriLoginClient(username, password)
+            client.login()
+            state.client = client
+            state.mobile_number = username
+            print("[STARTUP] ✅ Automatic password login successful! Session is active.")
+            logged_in = True
+            # Persist session to the shared database
             try:
-                client = NaukriLoginClient(username, password)
-                client.login()
-                state.client = client
-                state.mobile_number = username
-                print("[STARTUP] ✅ Automatic password login successful! Session is active.")
-                # Also persist this new session to the shared database
-                try:
-                    from src.careerflow.db import save_naukri_session, save_timeline_event
-                    import requests as _requests
-                    cookies_dict = _requests.utils.dict_from_cookiejar(client.session.cookies)
-                    save_naukri_session(username, client.naukri_session.bearer_token, cookies_dict)
-                    save_timeline_event(f"Automatic password login successful for operator {username}", "success")
-                except Exception:
-                    pass
-            except Exception as e:
-                print(f"[STARTUP] ⚠️ Automatic password login failed: {e}. Manual login required via dashboard.")
-                try:
-                    from src.careerflow.db import save_timeline_event
-                    save_timeline_event(f"Automatic password login failed for operator {username}", "error")
-                except Exception:
-                    pass
-        else:
-            print("[STARTUP] No credentials in .env or default placeholder detected. Awaiting manual login via dashboard.")
-
+                from src.careerflow.db import save_naukri_session, save_timeline_event
+                cookies_dict = extract_cookies_dict(client.session.cookies)
+                save_naukri_session(username, client.naukri_session.bearer_token, cookies_dict)
+                save_timeline_event(f"Automatic login successful for operator {username}", "success")
+            except Exception:
+                pass
+        except Exception as e:
+            print(f"[STARTUP] ⚠️ Automatic password login failed: {e}. Falling back to database session restore...")
+            try:
+                from src.careerflow.db import save_timeline_event
+                save_timeline_event(f"Automatic password login failed for operator {username}: {e}", "error")
+            except Exception:
+                pass
+                
+    # 4. Fallback: Try restoring session from the database if password login failed/was skipped
+    if not logged_in:
+        print("[STARTUP] Checking for a valid persisted session in the shared database...")
+        try:
+            restored = ensure_authenticated_client()
+            if restored:
+                print("[STARTUP] ✅ Session restored from database! Skipping manual login.")
+                logged_in = True
+        except Exception as db_err:
+            print(f"[STARTUP ERROR] Database session restore failed: {db_err}")
+            
+    if not logged_in:
+        print("[STARTUP] No active session. Awaiting manual login/OTP via dashboard.")
 
 if frontend_dir.exists():
     app.mount("/", StaticFiles(directory=str(frontend_dir), html=True), name="static")
