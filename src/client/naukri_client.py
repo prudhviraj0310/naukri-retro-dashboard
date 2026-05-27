@@ -153,8 +153,9 @@ class NaukriLoginClient:
         res = self._login_request()
 
         if not res.ok:
-            print(res.content)
-            raise NaukriAuthError("Login failed")
+            err_msg = f"Login failed (HTTP {res.status_code}): {res.text[:200]}"
+            logger.error(err_msg)
+            raise NaukriAuthError(err_msg)
 
         token = self._cookie_value("nauk_at")
         if not token:

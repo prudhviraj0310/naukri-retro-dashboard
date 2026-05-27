@@ -817,7 +817,7 @@ document.addEventListener("DOMContentLoaded", () => {
                 }, 800);
             } else {
                 loginCliLog.innerHTML = `[ERROR] Secure session failed: ${data.error || "Bad Credentials"}`;
-                showToast("Bad username or passcode.", "error");
+                showToast(data.error || "Bad username or passcode.", "error");
             }
         } catch (err) {
             btnLoginPwd.disabled = false;
