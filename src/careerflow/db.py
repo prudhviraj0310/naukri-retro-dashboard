@@ -9,15 +9,7 @@ DATABASE_URL = os.environ.get("DATABASE_URL")
 def get_db_connection():
     if DATABASE_URL:
         import psycopg2
-        # Parse DATABASE_URL for psycopg2
-        result = urllib.parse.urlparse(DATABASE_URL)
-        return psycopg2.connect(
-            database=result.path[1:],
-            user=result.username,
-            password=result.password,
-            host=result.hostname,
-            port=result.port
-        )
+        return psycopg2.connect(DATABASE_URL)
     else:
         # Fallback to local SQLite database in workspace
         db_path = os.path.join(os.path.dirname(os.path.dirname(os.path.dirname(__file__))), "careerflow.db")
