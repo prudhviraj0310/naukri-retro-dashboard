@@ -778,15 +778,12 @@ def startup_event():
             print("[STARTUP] No credentials in .env or default placeholder detected. Awaiting manual login via dashboard.")
 
 
-@app.get("/")
-def serve_index():
-    index_path = frontend_dir / "index.html"
-    if index_path.exists():
-        return FileResponse(str(index_path))
-    return HTMLResponse("<h2>Frontend static directory not found yet. Build index.html.</h2>")
-
 if frontend_dir.exists():
-    app.mount("/", StaticFiles(directory=str(frontend_dir)), name="static")
+    app.mount("/", StaticFiles(directory=str(frontend_dir), html=True), name="static")
+else:
+    @app.get("/")
+    def fallback_root():
+        return HTMLResponse("<h2>Frontend static directory not found yet. Build index.html.</h2>")
 
 if __name__ == "__main__":
     port = int(os.environ.get("PORT", 8001))
