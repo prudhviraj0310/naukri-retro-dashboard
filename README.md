@@ -178,16 +178,25 @@ docker compose run --rm careerflow
 
 This repository is optimized for deployment on **Render's Free Tier** with a double-layered keep-alive mechanism to prevent the service from spinning down (which usually happens after 15 minutes of inactivity).
 
-### 1. Render Setup
-1. Fork or push this repository to your private GitHub account.
-2. In the Render Dashboard, click **New +** and select **Blueprint**.
-3. Connect your repository. Render will read `render.yaml` and provision:
-   - A Python Web Service (runs the dashboard).
-   - A PostgreSQL Database (stores stats, applied jobs, and history).
-4. Set the environment variables in your Render Web Service dashboard:
+### 1. Render Setup (Manual Web Service - 100% Free)
+
+To avoid costs from Render's database plans (which expire and charge after 90 days), you can deploy as a standalone **Web Service** and connect a free, permanent PostgreSQL database from providers like **Neon.tech** or **Supabase**:
+
+1. **Get a Free Database:**
+   - Sign up for a free account at [Neon.tech](https://neon.tech/) or [Supabase.com](https://supabase.com/).
+   - Create a project and copy your database connection string (e.g., `postgresql://...`).
+2. **Create Render Web Service:**
+   - Go to the Render Dashboard, click **New +** and select **Web Service**.
+   - Connect your GitHub repository.
+   - Choose **Python** as the runtime.
+   - Set **Build Command**: `pip install -r requirements.txt`
+   - Set **Start Command**: `python server.py`
+3. **Configure Environment Variables on Render:**
+   - `DATABASE_URL`: Set this to the connection string you copied from Neon or Supabase.
    - `USERNAME`: Your Naukri username.
    - `PASSWORD`: Your Naukri password.
    - `OPENROUTER_API_KEY`: Your OpenAI/OpenRouter API key.
+   - `RENDER_EXTERNAL_URL`: Set this to your Web Service URL (e.g. `https://your-app-name.onrender.com`).
 
 ### 2. Double-Layered Keep-Alive Setup
 
