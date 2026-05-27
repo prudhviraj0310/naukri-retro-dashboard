@@ -1,0 +1,130 @@
+{
+  "candidate": {
+    "name": "Prudhvi Raj",
+    "experience_years": 2.3,
+    "target_roles": [
+      "Backend Engineer",
+      "Python Backend Developer",
+      "Node.js Developer",
+      "AI Automation Engineer",
+      "Full Stack Backend Engineer",
+      "Platform Automation Engineer"
+    ],
+    "primary_skills": [
+      "Python",
+      "Node.js",
+      "TypeScript",
+      "JavaScript",
+      "REST APIs",
+      "FastAPI",
+      "Express",
+      "MongoDB",
+      "PostgreSQL",
+      "AWS",
+      "Docker",
+      "Automation",
+      "OpenAI",
+      "LangChain",
+      "RAG"
+    ],
+    "secondary_skills": [
+      "Playwright",
+      "Selenium",
+      "Web Scraping",
+      "CI/CD",
+      "GitHub Actions",
+      "Redis",
+      "Microservices",
+      "System Design",
+      "Vector Databases",
+      "n8n",
+      "Trigger.dev"
+    ],
+    "preferred_locations": [
+      "Hyderabad",
+      "Bangalore",
+      "Bengaluru",
+      "Pune",
+      "Remote"
+    ],
+    "preferred_keywords": [
+      "backend",
+      "api",
+      "automation",
+      "ai",
+      "llm",
+      "platform",
+      "distributed",
+      "startup",
+      "product"
+    ],
+    "avoid_titles": [
+      "intern",
+      "internship",
+      "walk-in",
+      "walkin",
+      "trainer",
+      "tutor",
+      "android",
+      "ios",
+      "flutter",
+      "data scientist",
+      "ml engineer",
+      "engineering manager",
+      "principal engineer",
+      "staff engineer"
+    ],
+    "avoid_companies": [
+      "tcs",
+      "wipro",
+      "infosys",
+      "cognizant",
+      "accenture"
+    ]
+  },
+  "search": {
+    "job_age_days": 2,
+    "pages": 1,
+    "results_per_page": 20,
+    "experience_levels": [2],
+    "queries": [
+      {
+        "keyword": "Python Backend Developer",
+        "location": "Hyderabad"
+      },
+      {
+        "keyword": "Node.js Backend Developer",
+        "location": "Bangalore"
+      },
+      {
+        "keyword": "AI Automation Engineer",
+        "location": "Remote"
+      },
+      {
+        "keyword": "Backend Engineer",
+        "location": "Pune"
+      },
+      {
+        "keyword": "Full Stack Developer Node.js",
+        "location": "Hyderabad"
+      }
+    ]
+  },
+  "scoring": {
+    "use_ai_scoring": true,
+    "min_apply_score": 72,
+    "review_score": 55,
+    "max_jobs_to_score": 120
+  },
+  "application": {
+    "daily_limit": 12,
+    "delay_seconds": 4,
+    "answer_questionnaires": false,
+    "skip_external_apply": true
+  },
+  "profile_refresh": {
+    "headline": "Backend Engineer | Python, Node.js, AI Automation, APIs, AWS",
+    "summary": "Backend and AI automation engineer building API-driven systems, workflow automation, and LLM-powered tools with Python, Node.js, FastAPI, Express, AWS, Docker, and modern automation stacks.",
+    "resume_path": "resumes/current_resume.pdf"
+  }
+}

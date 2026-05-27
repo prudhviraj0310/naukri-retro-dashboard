@@ -1,0 +1,10 @@
+[Unit]
+Description=CareerFlow AI offline internship planner
+Wants=network-online.target
+After=network-online.target
+
+[Service]
+Type=oneshot
+WorkingDirectory=/opt/careerflow-ai
+EnvironmentFile=/opt/careerflow-ai/.env
+ExecStart=/opt/careerflow-ai/.venv/bin/python careerflow.py internship-plan

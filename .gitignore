@@ -1,0 +1,47 @@
+# Env files
+.env
+.env.*
+!.env.example
+
+# Local private documents and generated run state
+resumes/*
+!resumes/.gitkeep
+applied_jobs.csv
+internship_applications.csv
+careerflow_plan.csv
+internship_plan.csv
+score_cache.json
+run_reports/
+*.sqlite
+*.db
+
+# Python cache
+__pycache__/
+*.py[cod]
+*$py.class
+
+# Virtual environment
+venv/
+.env/
+.venv/
+
+# Logs
+*.log
+*.pid
+
+# OS files
+.DS_Store
+Thumbs.db
+
+# IDEs
+.vscode/
+.idea/
+
+# Python build files
+build/
+dist/
+*.egg-info/
+
+# Coverage (optional)
+.coverage
+htmlcov/

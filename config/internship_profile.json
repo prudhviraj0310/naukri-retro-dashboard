@@ -1,0 +1,251 @@
+{
+  "account": {
+    "mobile": "8019642185"
+  },
+  "search": {
+    "job_age_days": 30,
+    "pages": 2,
+    "results_per_page": 20,
+    "experience_levels": [0],
+    "params": {
+      "qproductJobSource": "2",
+      "qinternshipFlag": "true",
+      "naukriCampus": "true",
+      "nignbevent_src": "jobsearchDeskGNB"
+    },
+    "keywords": [
+      "software developer internship",
+      "Software Engineer Intern",
+      "Software Developer Intern",
+      "Software Internship",
+      "Developer Internship",
+      "Engineering Intern",
+      "Computer Science Intern",
+      "Backend Developer Intern",
+      "Python Developer Intern",
+      "Node.js Developer Intern",
+      "Full Stack Developer Intern",
+      "AI Intern",
+      "Generative AI Intern",
+      "Automation Intern",
+      "Cloud Intern",
+      "DevOps Intern",
+      "Web Developer Intern",
+      "Internship",
+      "Trainee Software Engineer",
+      "Graduate Engineer Trainee",
+      "Software Trainee",
+      "Fresher Software Developer",
+      "Entry Level Software Developer"
+    ],
+    "locations": [
+      "Bangalore"
+    ]
+  },
+  "filters": {
+    "offline_only": true,
+    "reject_terms": [
+      "remote",
+      "hybrid",
+      "work from home",
+      "wfh",
+      "virtual",
+      "online internship",
+      "hr",
+      "talent engagement",
+      "clinical",
+      "lab technician",
+      "video editor",
+      "product management",
+      "lead management",
+      "creative designer",
+      "data analyst",
+      "propulsion",
+      "sales",
+      "marketing",
+      "business development",
+      "php developer",
+      "android/ios",
+      "android",
+      "ios"
+    ],
+    "required_terms": [
+      "intern",
+      "internship",
+      "trainee"
+    ],
+    "preferred_locations": [
+      "bangalore",
+      "bengaluru"
+    ]
+  },
+  "scoring": {
+    "min_apply_score": 70,
+    "review_score": 45,
+    "max_jobs_to_score": 250
+  },
+  "application": {
+    "daily_limit": 25,
+    "delay_seconds": 5,
+    "upload_matched_resume": true,
+    "answer_questionnaires": true,
+    "skip_external_apply": true
+  },
+  "resume_profiles": [
+    {
+      "id": "backend_intern",
+      "label": "Backend Developer Intern",
+      "path": "resumes/backend_developer_intern.pdf",
+      "keywords": [
+        "backend",
+        "node.js",
+        "nodejs",
+        "express",
+        "python",
+        "fastapi",
+        "rest api",
+        "api",
+        "mongodb",
+        "postgresql",
+        "redis",
+        "docker",
+        "server-side",
+        "distributed systems"
+      ]
+    },
+    {
+      "id": "fullstack_intern",
+      "label": "Full-Stack Developer Intern",
+      "path": "resumes/fullstack_developer_intern.pdf",
+      "keywords": [
+        "full stack",
+        "fullstack",
+        "react",
+        "next.js",
+        "typescript",
+        "javascript",
+        "node.js",
+        "express",
+        "frontend",
+        "backend",
+        "api",
+        "tailwind",
+        "vite"
+      ]
+    },
+    {
+      "id": "ai_systems",
+      "label": "AI Systems / Backend",
+      "path": "resumes/ai_systems_backend.pdf",
+      "keywords": [
+        "ai",
+        "genai",
+        "generative ai",
+        "llm",
+        "langchain",
+        "langgraph",
+        "rag",
+        "vector",
+        "openai",
+        "prompt",
+        "agent",
+        "automation",
+        "python",
+        "fastapi"
+      ]
+    },
+    {
+      "id": "software_intern",
+      "label": "Software Engineering Intern",
+      "path": "resumes/software_engineering_intern.pdf",
+      "keywords": [
+        "software engineering",
+        "software developer",
+        "sde",
+        "java",
+        "python",
+        "javascript",
+        "data structures",
+        "algorithms",
+        "oop",
+        "debugging",
+        "rest api",
+        "git"
+      ]
+    },
+    {
+      "id": "digital_technology",
+      "label": "Digital Technology Intern",
+      "path": "resumes/digital_technology_intern.pdf",
+      "keywords": [
+        "digital technology",
+        "software",
+        "backend",
+        "cloud",
+        "python",
+        "javascript",
+        "fastapi",
+        "node.js",
+        "docker",
+        "linux",
+        "system design"
+      ]
+    },
+    {
+      "id": "platform_infrastructure",
+      "label": "Infrastructure / Platform",
+      "path": "resumes/platform_infrastructure.pdf",
+      "keywords": [
+        "infrastructure",
+        "platform",
+        "devops",
+        "cloud",
+        "aws",
+        "gcp",
+        "docker",
+        "linux",
+        "ci/cd",
+        "redis",
+        "distributed systems",
+        "reliability"
+      ]
+    },
+    {
+      "id": "backend_systems",
+      "label": "Backend / Systems",
+      "path": "resumes/backend_systems.pdf",
+      "keywords": [
+        "backend",
+        "systems",
+        "distributed systems",
+        "python",
+        "fastapi",
+        "node.js",
+        "postgresql",
+        "mongodb",
+        "redis",
+        "docker",
+        "automation",
+        "data pipelines"
+      ]
+    },
+    {
+      "id": "research_systems",
+      "label": "Software / Research Systems",
+      "path": "resumes/research_systems.pdf",
+      "keywords": [
+        "research",
+        "systems",
+        "distributed systems",
+        "backend",
+        "algorithms",
+        "cloud",
+        "data processing",
+        "python",
+        "docker",
+        "linux",
+        "scalable systems"
+      ]
+    }
+  ]
+}

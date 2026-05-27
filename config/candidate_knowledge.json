@@ -1,0 +1,88 @@
+{
+  "identity": {
+    "name": "Prudhvi Raj",
+    "role": "Backend Engineer / AI Automation Developer",
+    "experience_years": 2.3,
+    "education": "B.Tech in Computer Science",
+    "current_status": "Seeking Internship / Full-time in Bangalore",
+    "notice_period": "Immediate Joiner",
+    "preferred_locations": ["Bangalore", "Bengaluru"]
+  },
+
+  "professional_summary": "Backend and AI automation engineer with 2.3 years of experience building API-driven systems, workflow automation pipelines, and LLM-powered tools. Proficient in Python, Node.js, FastAPI, Express, and modern cloud-native tooling. Passionate about building intelligent systems that solve real-world problems at scale.",
+
+  "core_skills": {
+    "languages": ["Python", "JavaScript", "TypeScript"],
+    "backend_frameworks": ["FastAPI", "Express.js", "Node.js"],
+    "databases": ["MongoDB", "PostgreSQL", "Redis"],
+    "ai_ml": ["OpenAI API", "LangChain", "RAG", "LangGraph", "Vector Databases", "Prompt Engineering"],
+    "cloud_devops": ["AWS", "Docker", "GitHub Actions", "CI/CD", "Linux"],
+    "automation": ["Selenium", "Playwright", "Web Scraping", "n8n", "Trigger.dev"],
+    "architecture": ["REST APIs", "Microservices", "System Design", "Distributed Systems"]
+  },
+
+  "github_projects": [
+    {
+      "name": "CareerFlow AI (Nakari)",
+      "description": "Full-stack Naukri job automation platform with AI-powered job matching, multi-resume targeting, and automated application pipeline",
+      "tech_stack": ["Python", "FastAPI", "Selenium", "OpenAI", "CSV/JSON pipelines"],
+      "highlights": [
+        "Built automated job application pipeline handling 25+ applications/day",
+        "Developed multi-resume matching engine that selects optimal resume per job posting",
+        "Implemented local + AI scoring system for job relevance ranking",
+        "Created real-time web dashboard with glassmorphism UI for monitoring",
+        "Engineered questionnaire auto-answering system for job applications"
+      ]
+    },
+    {
+      "name": "ADD YOUR PROJECT HERE",
+      "description": "Replace this with your actual GitHub project",
+      "tech_stack": [],
+      "highlights": []
+    }
+  ],
+
+  "work_experience": [
+    {
+      "company": "YOUR COMPANY NAME",
+      "role": "Backend Developer",
+      "duration": "YYYY-MM to YYYY-MM",
+      "description": "Replace with your actual work experience",
+      "achievements": [
+        "Replace with specific achievements using metrics",
+        "e.g., Reduced API response time by 40% through query optimization"
+      ]
+    }
+  ],
+
+  "certifications": [],
+
+  "questionnaire_defaults": {
+    "email": "prudhvi.raj.nakari@gmail.com",
+    "phone": "8142498424",
+    "tenth_percentage": "85%",
+    "twelfth_percentage": "85%",
+    "graduation_percentage": "8.0 CGPA / 80%",
+    "current_ctc": "0",
+    "expected_ctc": "3-5 LPA",
+    "total_experience_years": "2",
+    "relevant_experience_years": "2",
+    "notice_period": "Immediate",
+    "notice_period_days": 0,
+    "willingness_to_relocate": true,
+    "preferred_location": "Bangalore",
+    "willing_to_work_from_office": true,
+    "highest_qualification": "B.Tech / B.E.",
+    "graduation_year": "2024",
+    "languages_known": ["English", "Hindi", "Telugu"],
+    "has_laptop": true,
+    "python_experience_years": "2",
+    "nodejs_experience_years": "2",
+    "javascript_experience_years": "2",
+    "react_experience_years": "1",
+    "docker_experience_years": "1",
+    "aws_experience_years": "1",
+    "mongodb_experience_years": "1",
+    "sql_experience_years": "1"
+  }
+}

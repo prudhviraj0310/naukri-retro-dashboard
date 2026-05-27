@@ -1,0 +1,34 @@
+name: Render Keep-Alive Pinger
+
+on:
+  schedule:
+    # Runs every 5 minutes (GitHub Actions cron might run slightly delayed, but it will keep the app awake/wake it up)
+    - cron: '*/5 * * * *'
+  workflow_dispatch: # Allows manual trigger from the GitHub UI
+
+jobs:
+  keep-alive:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Ping CareerFlow Render Service
+        run: |
+          # INSTRUCTIONS:
+          # 1. You can set the RENDER_APP_URL secret in your GitHub Repo: Settings -> Secrets and variables -> Actions -> New repository secret.
+          # 2. Or, you can simply replace the default URL below with your actual Render URL (e.g., https://your-app.onrender.com).
+          
+          URL="${{ secrets.RENDER_APP_URL }}"
+          
+          if [ -z "$URL" ]; then
+            # FALLBACK: Replace the URL below with your actual Render app URL
+            URL="https://careerflow-ai-dashboard.onrender.com"
+          fi
+          
+          echo "Pinging $URL..."
+          STATUS_CODE=$(curl -o /dev/null -s -w "%{http_code}" -L "$URL/api/status")
+          echo "HTTP Status Code: $STATUS_CODE"
+          
+          if [ "$STATUS_CODE" -eq 200 ] || [ "$STATUS_CODE" -eq 301 ] || [ "$STATUS_CODE" -eq 302 ]; then
+            echo "✅ Successfully pinged Render app!"
+          else
+            echo "⚠️ Ping returned status code $STATUS_CODE. App might still be sleeping or booting up."
+          fi

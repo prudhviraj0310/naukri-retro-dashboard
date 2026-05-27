@@ -1,0 +1,13 @@
+.git
+.venv
+__pycache__
+*.pyc
+.env
+.env.*
+!.env.example
+applied_jobs.csv
+careerflow_plan.csv
+internship_plan.csv
+internship_applications.csv
+score_cache.json
+run_reports

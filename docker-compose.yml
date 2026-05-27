@@ -1,0 +1,9 @@
+services:
+  careerflow:
+    build: .
+    env_file:
+      - .env
+    volumes:
+      - ./resumes:/app/resumes:ro
+      - ./run_reports:/app/run_reports
+    command: ["sh", "-lc", "python careerflow.py internship-plan && cp internship_plan.csv run_reports/internship_plan.csv"]

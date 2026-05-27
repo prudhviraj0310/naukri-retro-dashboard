@@ -1,0 +1,563 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>CareerFlow AI — Retro Autonomous Mission Control</title>
+    <meta name="description" content="Skeuomorphic analog computer console and autonomous career assistant.">
+    
+    <!-- Retro Google Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=VT323&family=Share+Tech+Mono&family=Syne:wght@700;800&family=JetBrains+Mono:wght@400;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    
+    <link rel="stylesheet" href="index.css">
+</head>
+<body class="retro-body">
+
+    <!-- Starry Grid Background (INPUT Style) -->
+    <div class="cyber-background">
+        <div class="neon-grid-floor"></div>
+        <div class="starfield"></div>
+    </div>
+
+    <!-- Master Physical Console Chassis Wrapper -->
+    <div class="console-chassis">
+        
+        <!-- Physical Bezel Screw Plates -->
+        <div class="bezel-screw top-left"><i class="fa-solid fa-circle-dot"></i></div>
+        <div class="bezel-screw top-right"><i class="fa-solid fa-circle-dot"></i></div>
+        <div class="bezel-screw bottom-left"><i class="fa-solid fa-circle-dot"></i></div>
+        <div class="bezel-screw bottom-right"><i class="fa-solid fa-circle-dot"></i></div>
+
+        <!-- Master Power Panel on the Bezel -->
+        <div class="bezel-control-panel">
+            <div class="console-label">CAREERFLOW CONSOLE UNIT // MODEL CF-80s</div>
+            <div class="controls-row">
+                <!-- Retro Toggle Switch for CRT Effect -->
+                <div class="toggle-container">
+                    <span class="toggle-label">CRT DE-GAUSS</span>
+                    <label class="switch">
+                        <input type="checkbox" id="crt-effect-switch" checked>
+                        <span class="slider-round"></span>
+                    </label>
+                </div>
+                <!-- Master System Status Light -->
+                <div class="power-indicator">
+                    <div class="led-light led-red glow-red" id="master-power-led"></div>
+                    <span class="led-label">PWR ON</span>
+                </div>
+            </div>
+        </div>
+
+        <!-- MAIN LAYOUT: CRT Monitor (Left/Center) + VHS Tape Deck & Controls (Right) -->
+        <div class="console-grid">
+
+            <!-- ========================================== -->
+            <!-- 1. THE CRT MONITOR SECTION -->
+            <!-- ========================================== -->
+            <div class="crt-monitor">
+                <!-- Rounded screen frame bezel -->
+                <div class="crt-bezel-frame"></div>
+                
+                <!-- CRT Screen Container (Enables Scanlines & Curvature) -->
+                <div class="crt-screen crt-effect-active" id="crt-display-screen">
+                    <div class="crt-scanlines"></div>
+                    <div class="crt-glass-glare"></div>
+                    <div class="crt-flicker"></div>
+                    
+                    <!-- Inner Monitor Contents -->
+                    <div class="crt-content-area">
+                        
+                        <!-- Top Monitor Header (LED readout) -->
+                        <header id="top-bar" class="monitor-header">
+                            <div class="header-left">
+                                <div class="logo-mark">
+                                    <div class="logo-ring">
+                                        <div id="status-orb" class="status-orb orb-active"></div>
+                                    </div>
+                                </div>
+                                <div class="logo-text">
+                                    <h1 class="brand">CAREERFLOW <span>AI-v2.0</span></h1>
+                                    <span id="daemon-status-label" class="status-label label-active">AUTONOMOUS MODE ACTIVE</span>
+                                </div>
+                            </div>
+                            <div class="header-right">
+                                <div id="uptime-badge" class="uptime-badge">
+                                    <i class="fa-solid fa-bolt"></i>
+                                    <span id="uptime-text">BOOTING SYSTEM...</span>
+                                </div>
+                                <div id="clock" class="digital-clock">00:00:00</div>
+                            </div>
+                        </header>
+
+                        <!-- Main Screen Split (Dashboard stats and timeline/logs) -->
+                        <div class="screen-grid">
+
+                            <!-- Left Monitor Pane: Live HUD & System Feed -->
+                            <div class="monitor-pane-left">
+                                
+                                <!-- Hero Greeting phosphor style -->
+                                <section class="hero-section">
+                                    <div class="phosphor-greeting" id="greeting-text">SYSTEM BOOT SUCCESS...</div>
+                                    <p class="greeting-sub" id="greeting-sub">AI Career Agent standing by. Initializing scan cycles.</p>
+                                </section>
+
+                                <!-- TRANSIT STRIPES STATS DECK (Poster style) -->
+                                <section class="transit-stats-deck">
+                                    <div class="deck-overlay-grid"></div>
+                                    <div class="transit-label">FUNNEL SIGNAL RECEPTORS</div>
+                                    
+                                    <!-- 4 Ribbon Tracks wrapping numbers -->
+                                    <div class="transit-tracks">
+                                        
+                                        <!-- Track 1: Scanned -->
+                                        <div class="track-row track-cyan">
+                                            <div class="track-ribbon"><div class="ribbon-glow"></div></div>
+                                            <div class="track-node">
+                                                <div class="node-ring"><div class="node-dot"></div></div>
+                                                <div class="node-value" id="stat-scanned">0</div>
+                                            </div>
+                                            <span class="track-label">SCANNED JOBS</span>
+                                        </div>
+
+                                        <!-- Track 2: Matched -->
+                                        <div class="track-row track-magenta">
+                                            <div class="track-ribbon"><div class="ribbon-glow"></div></div>
+                                            <div class="track-node">
+                                                <div class="node-ring"><div class="node-dot"></div></div>
+                                                <div class="node-value" id="stat-matched">0</div>
+                                            </div>
+                                            <span class="track-label">PROFILE MATCHES</span>
+                                        </div>
+
+                                        <!-- Track 3: Applied -->
+                                        <div class="track-row track-green">
+                                            <div class="track-ribbon"><div class="ribbon-glow"></div></div>
+                                            <div class="track-node">
+                                                <div class="node-ring"><div class="node-dot"></div></div>
+                                                <div class="node-value" id="stat-applied">0</div>
+                                            </div>
+                                            <span class="track-label">SUBMITTED APPS</span>
+                                        </div>
+
+                                        <!-- Track 4: Visibility completeness -->
+                                        <div class="track-row track-amber">
+                                            <div class="track-ribbon"><div class="ribbon-glow"></div></div>
+                                            <div class="track-node">
+                                                <!-- Mini circular SVG dashboard graph -->
+                                                <div class="stat-ring-mini">
+                                                    <svg viewBox="0 0 36 36" class="ring-svg">
+                                                        <path class="ring-bg" d="M18 2.0845 a 15.9155 15.9155 0 0 1 0 31.831 a 15.9155 15.9155 0 0 1 0 -31.831"/>
+                                                        <path id="ring-fill" class="ring-fill" stroke-dasharray="85, 100" d="M18 2.0845 a 15.9155 15.9155 0 0 1 0 31.831 a 15.9155 15.9155 0 0 1 0 -31.831"/>
+                                                    </svg>
+                                                </div>
+                                                <div class="node-value" id="stat-visibility">--%</div>
+                                            </div>
+                                            <span class="track-label">PROFILE BOOST</span>
+                                        </div>
+
+                                        <!-- Track 5: Visibility syncs / profile refreshes -->
+                                        <div class="track-row track-blue">
+                                            <div class="track-ribbon"><div class="ribbon-glow"></div></div>
+                                            <div class="track-node">
+                                                <div class="node-ring"><div class="node-dot"></div></div>
+                                                <div class="node-value" id="stat-syncs">0</div>
+                                            </div>
+                                            <span class="track-label">VISIBILITY SYNCS</span>
+                                        </div>
+
+
+                                    </div>
+                                </section>
+
+                                <!-- Activity Timeline -->
+                                <div class="crt-panel panel-timeline">
+                                    <div class="panel-header">
+                                        <h2><i class="fa-solid fa-timeline"></i> INCIDENT TIMELINE</h2>
+                                        <span class="panel-badge" id="timeline-count">0 EVENTS</span>
+                                    </div>
+                                    <div class="timeline-scroll" id="timeline-container">
+                                        <div class="timeline-empty">
+                                            <i class="fa-solid fa-satellite-dish fa-spin-slow"></i>
+                                            <p>Awaiting telemetry signals...</p>
+                                        </div>
+                                    </div>
+                                </div>
+
+                            </div>
+
+                            <!-- Right Monitor Pane: Main Logs & Ticker -->
+                            <div class="monitor-pane-right">
+
+                                <!-- Live System Terminal -->
+                                <div class="crt-panel panel-terminal">
+                                    <div class="panel-header">
+                                        <h2><i class="fa-solid fa-terminal"></i> CRT LOG MATRIX</h2>
+                                        <div class="terminal-controls">
+                                            <span id="terminal-status" class="terminal-badge badge-idle">
+                                                <span class="pulse-dot"></span> IDLE
+                                            </span>
+                                        </div>
+                                    </div>
+                                    <div class="terminal-body" id="terminal-body">
+                                        <div id="terminal-output" class="terminal-output">
+                                            <span class="t-system">[SYS] CareerFlow AI Mainframe v2.0 initialized. Ready for operations.</span>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <!-- Recent Applications List -->
+                                <div class="crt-panel panel-applications">
+                                    <div class="panel-header">
+                                        <h2><i class="fa-solid fa-list-check"></i> ACTIVE APPLICANT REGISTRY</h2>
+                                        <span class="panel-badge" id="apps-count">0 RECORDED</span>
+                                    </div>
+                                    <div class="apps-scroll" id="apps-container">
+                                        <div class="apps-empty">
+                                            <i class="fa-solid fa-inbox"></i>
+                                            <p>No transactions registered in current batch.</p>
+                                        </div>
+                                    </div>
+                                </div>
+
+                            </div>
+
+                        </div> <!-- end screen-grid -->
+
+                        <!-- RETRO CLI LOGIN OVERLAY (Shows when server is unauthenticated) -->
+                        <div id="login-overlay" class="login-overlay hidden">
+                            <div class="login-box">
+                                <div class="login-header">
+                                    <div class="red-bar"></div>
+                                    <span>NAUKRI ACCESS MAINFRAME // SECURE BOOT</span>
+                                </div>
+                                <div class="login-body">
+                                    <div class="cli-prompt">[GUEST@CF-MAINFRAME]:~$ run auth-handshake</div>
+                                    <div class="cli-log-line">System is currently UNAUTHENTICATED. Please supply Naukri mobile session.</div>
+                                    
+                                    <!-- TAB 1: OTP REQUEST -->
+                                    <div id="login-form-otp" class="login-form-active">
+                                        <div class="input-line">
+                                            <label for="login-mobile-input">ENTER REGISTERED MOBILE #:</label>
+                                            <input type="text" id="login-mobile-input" class="retro-input" placeholder="e.g. 8019642185" maxlength="15">
+                                        </div>
+                                        <div class="form-buttons">
+                                            <button id="btn-request-otp" class="retro-cli-btn">REQUEST ACCESS CODE (OTP)</button>
+                                            <button id="btn-toggle-password-mode" class="retro-cli-link">Use Password Handshake instead</button>
+                                        </div>
+                                    </div>
+
+                                    <!-- TAB 2: OTP VERIFICATION -->
+                                    <div id="login-form-verify" class="login-form-hidden">
+                                        <div class="input-line">
+                                            <label for="login-otp-input">ENTER 6-DIGIT OTP ACCESS CODE:</label>
+                                            <input type="text" id="login-otp-input" class="retro-input" placeholder="e.g. 123456" maxlength="6">
+                                        </div>
+                                        <div class="form-buttons">
+                                            <button id="btn-verify-otp" class="retro-cli-btn btn-success">VERIFY HANDSHAKE</button>
+                                            <button id="btn-cancel-verify" class="retro-cli-btn btn-danger">GO BACK</button>
+                                        </div>
+                                    </div>
+
+                                    <!-- TAB 3: PASSWORD SECURE HANDSHAKE -->
+                                    <div id="login-form-pwd" class="login-form-hidden">
+                                        <div class="input-line">
+                                            <label for="login-username-input">NAUKRI USERNAME/EMAIL:</label>
+                                            <input type="text" id="login-username-input" class="retro-input" placeholder="e.g. prudhvi@email.com">
+                                        </div>
+                                        <div class="input-line">
+                                            <label for="login-password-input">SECURE PASSCODE:</label>
+                                            <input type="password" id="login-password-input" class="retro-input" placeholder="****************">
+                                        </div>
+                                        <div class="form-buttons">
+                                            <button id="btn-login-pwd" class="retro-cli-btn btn-success">ESTABLISH PASSWORD SESSION</button>
+                                            <button id="btn-toggle-otp-mode" class="retro-cli-link">Use Mobile OTP verification</button>
+                                        </div>
+                                    </div>
+
+                                    <div class="cli-output-log" id="login-cli-log">
+                                        [SYS] Awaiting operator input...
+                                    </div>
+                                </div>
+                            </div>
+                        </div> <!-- end login-overlay -->
+
+                    </div>
+                </div> <!-- end crt-screen -->
+            </div> <!-- end crt-monitor -->
+
+            <!-- ========================================== -->
+            <!-- 2. SKEUOMORPHIC VHS CASSETTE DECK SLOT & CONTROLS -->
+            <!-- ========================================== -->
+            <div class="vhs-sidebar">
+                
+                <!-- Physical VHS Slot Plate -->
+                <div class="vhs-deck-chassis">
+                    
+                    <div class="vhs-slot-door">
+                        <div class="vhs-door-text">INSERT VHS CASSETTE TAPE TO INITIATE AUTO-SCANS</div>
+                        
+                        <!-- THE ACTUAL SKEUOMORPHIC VHS TAPE (Rendered visible in slot) -->
+                        <div class="vhs-cassette" id="vhs-tape-body">
+                            
+                            <!-- Cassette Label (Handwritten marker style) -->
+                            <div class="cassette-label">
+                                <div class="label-lined-area">
+                                    <span class="handwritten-title">CAREERFLOW AUTONOMOUS ENGINE</span>
+                                    <span class="label-date">v2.0 // BATCH SCAN</span>
+                                </div>
+                                <div class="label-brand">FosterLands HI-FI STEREO T-120</div>
+                            </div>
+
+                            <!-- Transparent viewing window with reels -->
+                            <div class="cassette-window">
+                                
+                                <!-- Left Reel (Source Tape) -->
+                                <div class="vhs-reel left-reel" id="vhs-left-reel">
+                                    <div class="reel-hub">
+                                        <div class="hub-spoke gear-1"></div>
+                                        <div class="hub-spoke gear-2"></div>
+                                        <div class="hub-spoke gear-3"></div>
+                                    </div>
+                                    <div class="tape-pack" id="left-tape-pack" style="transform: scale(0.85);"></div>
+                                </div>
+
+                                <!-- Right Reel (Applied Tape) -->
+                                <div class="vhs-reel right-reel" id="vhs-right-reel">
+                                    <div class="reel-hub">
+                                        <div class="hub-spoke gear-1"></div>
+                                        <div class="hub-spoke gear-2"></div>
+                                        <div class="hub-spoke gear-3"></div>
+                                    </div>
+                                    <div class="tape-pack" id="right-tape-pack" style="transform: scale(0.25);"></div>
+                                </div>
+
+                            </div> <!-- end cassette-window -->
+                            
+                            <!-- VHS Cassette Bottom ridges -->
+                            <div class="vhs-bottom-grill">
+                                <span>T-120</span>
+                                <span>VHS TYPE-I</span>
+                            </div>
+                        </div>
+                    </div> <!-- end vhs-slot-door -->
+                </div> <!-- end vhs-deck-chassis -->
+
+                <!-- ANALOG Bouncing LED VU METERS -->
+                <div class="vu-meter-deck">
+                    <div class="vu-title">DECIBELS MATRIX FEEDBACK</div>
+                    <div class="vu-bars-row" id="vu-led-meters">
+                        <!-- 12 UV bar items containing glowing LED stacks -->
+                        <div class="vu-channel">
+                            <div class="vu-bar"><div class="vu-light"></div></div>
+                            <span class="vu-label">L</span>
+                        </div>
+                        <div class="vu-channel">
+                            <div class="vu-bar"><div class="vu-light"></div></div>
+                            <span class="vu-label">1</span>
+                        </div>
+                        <div class="vu-channel">
+                            <div class="vu-bar"><div class="vu-light"></div></div>
+                            <span class="vu-label">2</span>
+                        </div>
+                        <div class="vu-channel">
+                            <div class="vu-bar"><div class="vu-light"></div></div>
+                            <span class="vu-label">3</span>
+                        </div>
+                        <div class="vu-channel">
+                            <div class="vu-bar"><div class="vu-light"></div></div>
+                            <span class="vu-label">4</span>
+                        </div>
+                        <div class="vu-channel">
+                            <div class="vu-bar"><div class="vu-light"></div></div>
+                            <span class="vu-label">5</span>
+                        </div>
+                        <div class="vu-channel">
+                            <div class="vu-bar"><div class="vu-light"></div></div>
+                            <span class="vu-label">6</span>
+                        </div>
+                        <div class="vu-channel">
+                            <div class="vu-bar"><div class="vu-light"></div></div>
+                            <span class="vu-label">7</span>
+                        </div>
+                        <div class="vu-channel">
+                            <div class="vu-bar"><div class="vu-light"></div></div>
+                            <span class="vu-label">8</span>
+                        </div>
+                        <div class="vu-channel">
+                            <div class="vu-bar"><div class="vu-light"></div></div>
+                            <span class="vu-label">R</span>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- TACTILE CONSOLE PUSH BUTTONS -->
+                <div class="physical-deck-controls">
+                    <div class="controls-header">CONSOLE CONTROL PANEL</div>
+                    
+                    <div class="buttons-grid">
+                        <!-- Play Button (Apply flow) -->
+                        <button id="btn-play" class="console-push-btn btn-play" title="Trigger direct job application batch">
+                            <span class="btn-cap"><i class="fa-solid fa-play"></i></span>
+                            <span class="btn-name">PLAY // APPLY</span>
+                        </button>
+                        <!-- Scan Button (Plan flow) -->
+                        <button id="btn-scan" class="console-push-btn btn-scan" title="Scan and rank new Naukri jobs">
+                            <span class="btn-cap"><i class="fa-solid fa-magnifying-glass"></i></span>
+                            <span class="btn-name">SCAN // PLAN</span>
+                        </button>
+                        <!-- Sync Button (Refresh flow) -->
+                        <button id="btn-sync" class="console-push-btn btn-sync" title="Update Naukri profile statistics & resume">
+                            <span class="btn-cap"><i class="fa-solid fa-arrows-rotate"></i></span>
+                            <span class="btn-name">SYNC // BOOST</span>
+                        </button>
+                    </div>
+
+                    <!-- Physical LIVE toggle switch below buttons -->
+                    <div class="live-toggle-row">
+                        <span class="switch-side-label text-dry">DRY RUN</span>
+                        <div class="chunky-toggle-box" id="live-toggle-switch">
+                            <div class="chunky-lever" id="live-toggle-lever"></div>
+                        </div>
+                        <span class="switch-side-label text-live">LIVE APPLY</span>
+                        <div class="live-warning-led" id="live-warning-led"></div>
+                    </div>
+
+                </div> <!-- end deck-controls -->
+
+                <!-- AI ENGINE CO-PROCESSOR PERIPHERAL UNIT -->
+                <div class="crt-panel panel-ai">
+                    <div class="panel-header">
+                        <h2><i class="fa-solid fa-brain"></i> AI ENGINE UNIT</h2>
+                        <span id="ai-badge" class="panel-badge badge-off">OFFLINE</span>
+                    </div>
+
+                    <!-- Peripheral Card Tabs -->
+                    <div class="ai-tabs-row">
+                        <button class="ai-tab-btn tab-active" id="tab-btn-status">HUBS</button>
+                        <button class="ai-tab-btn" id="tab-btn-resume">RESUME TAILOR</button>
+                        <button class="ai-tab-btn" id="tab-btn-headline">HEADLINE BOOST</button>
+                        <button class="ai-tab-btn" id="tab-btn-api">API CONFIG</button>
+                    </div>
+
+                    <div class="ai-tab-body">
+                        
+                        <!-- TAB 1: HUB CONFIG -->
+                        <div id="ai-tab-status" class="ai-tab-content-active">
+                            <div class="ai-status-grid">
+                                <div class="ai-stat-row">
+                                    <span class="ai-dot dot-model"></span>
+                                    <span class="ai-key">AI MODEL</span>
+                                    <span class="ai-val" id="ai-model">—</span>
+                                </div>
+                                <div class="ai-stat-row">
+                                    <span class="ai-dot dot-key"></span>
+                                    <span class="ai-key">API ACCESS</span>
+                                    <span class="ai-val" id="ai-apikey">NOT SET</span>
+                                </div>
+                                <div class="ai-stat-row">
+                                    <span class="ai-dot dot-skills"></span>
+                                    <span class="ai-key">RESUME SHARDS</span>
+                                    <span class="ai-val" id="ai-skills">0 PROFILES</span>
+                                </div>
+                                <div class="ai-stat-row">
+                                    <span class="ai-dot dot-projects"></span>
+                                    <span class="ai-key">MATCH PARAMS</span>
+                                    <span class="ai-val" id="ai-projects">0 LOADS</span>
+                                </div>
+                                <div class="ai-stat-row">
+                                    <span class="ai-dot dot-profile"></span>
+                                    <span class="ai-key">OPERATOR</span>
+                                    <span class="ai-val" id="ai-profile">—</span>
+                                </div>
+                                <div class="ai-stat-row">
+                                    <span class="ai-dot dot-headline"></span>
+                                    <span class="ai-key">HEADLINE</span>
+                                    <span class="ai-val ai-val-truncate" id="ai-headline">—</span>
+                                </div>
+                                <div class="ai-stat-row">
+                                    <span class="ai-dot dot-next"></span>
+                                    <span class="ai-key">NEXT CYCLE</span>
+                                    <span class="ai-val" id="ai-next-cycle">—</span>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- TAB 2: RESUME TAILOR -->
+                        <div id="ai-tab-resume" class="ai-tab-content-hidden">
+                            <div class="ai-form">
+                                <div class="form-input">
+                                    <label>TARGET JOB TITLE:</label>
+                                    <input type="text" id="ai-tailor-title" class="retro-input" placeholder="e.g. Node.js Developer Intern">
+                                </div>
+                                <div class="form-input">
+                                    <label>COMPANY NAME:</label>
+                                    <input type="text" id="ai-tailor-company" class="retro-input" placeholder="e.g. FosterLands AI">
+                                </div>
+                                <div class="form-input">
+                                    <label>JOB DESCRIPTION:</label>
+                                    <textarea id="ai-tailor-desc" class="retro-textarea" placeholder="Paste full job description requirements..."></textarea>
+                                </div>
+                                <button id="btn-trigger-tailor" class="retro-cli-btn">GENERATE RESUME SEGMENTS</button>
+                                <div class="ai-result-printout hidden" id="ai-tailor-result">
+                                    <div class="printout-header">DOT-MATRIX PRINTER // RESPONSE</div>
+                                    <pre class="printout-body" id="ai-tailor-output">Awaiting co-processor input...</pre>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- TAB 3: HEADLINE BOOST -->
+                        <div id="ai-tab-headline" class="ai-tab-content-hidden">
+                            <div class="ai-form">
+                                <div class="form-input">
+                                    <label>TARGET ROLE / NICHE:</label>
+                                    <input type="text" id="ai-headline-role" class="retro-input" placeholder="e.g. Backend Developer Intern | FastAPI">
+                                </div>
+                                <button id="btn-trigger-headline" class="retro-cli-btn">GENERATE SEO HEADLINE</button>
+                                <div class="ai-result-printout hidden" id="ai-headline-result">
+                                    <div class="printout-header">SEO PROMOTION OPTIMIZER</div>
+                                    <pre class="printout-body" id="ai-headline-output">Awaiting co-processor input...</pre>
+                                    <button id="btn-headline-apply-profile" class="retro-cli-btn btn-success hidden">WRITE DIRECTLY TO PROFILE</button>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- TAB 4: API KEY CONFIG -->
+                        <div id="ai-tab-api" class="ai-tab-content-hidden">
+                            <div class="ai-form">
+                                <div class="form-input">
+                                    <label>OPENROUTER API KEY:</label>
+                                    <input type="password" id="ai-settings-key" class="retro-input" placeholder="sk-or-v1-*****************">
+                                </div>
+                                <div class="form-input">
+                                    <label>PREFERED OPENROUTER MODEL:</label>
+                                    <input type="text" id="ai-settings-model" class="retro-input" placeholder="e.g. google/gemini-2.5-flash">
+                                </div>
+                                <button id="btn-save-ai-settings" class="retro-cli-btn btn-success">SAVE CO-PROCESSOR PARAMS</button>
+                            </div>
+                        </div>
+
+                    </div> <!-- end tab-body -->
+                </div> <!-- end crt-panel panel-ai -->
+
+            </div> <!-- end vhs-sidebar -->
+
+        </div> <!-- end console-grid -->
+
+        <!-- Physical Bezel Footer -->
+        <footer class="app-footer">
+            <span class="footer-left">SYS ID: CF-MAINFRAME-80 // ACTIVE PROTOCOL</span>
+            <span class="footer-center">CAREERFLOW AI © 2026 // RETRO OPERATOR HUD</span>
+            <span class="footer-right" id="footer-version">v2.0-ANALOG</span>
+        </footer>
+
+    </div> <!-- end console-chassis -->
+
+    <!-- Ambient retro notifications toast box -->
+    <div id="toast-container" class="toast-container"></div>
+
+    <script src="app.js"></script>
+</body>
+</html>

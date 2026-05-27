@@ -1,0 +1,11 @@
+requests
+urllib3
+httpcloak
+python-dotenv
+selenium
+pycryptodome 
+colorama
+fastapi
+uvicorn
+openai
+psycopg2-binary
